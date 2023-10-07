@@ -208,6 +208,7 @@ public class StreamFunction {
 ```yaml
 spring.cloud.stream.bindings.kStreamFunction-in-0.destination=R2
 spring.cloud.stream.bindings.kStreamFunction-out-0.destination=R4
+spring.cloud.stream.kafka.binder.configuration.commit.interval.ms=1000
 ```
 
 ## Start Consumer in R4 Topic 
