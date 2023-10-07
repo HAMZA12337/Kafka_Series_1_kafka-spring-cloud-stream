@@ -204,6 +204,18 @@ public class StreamFunction {
     }
 }
 ```
+* application.properties
+```yaml
+spring.cloud.stream.bindings.kStreamFunction-in-0.destination=R2
+spring.cloud.stream.bindings.kStreamFunction-out-0.destination=R4
+```
+
+## Start Consumer in R4 Topic 
+
+ You shoulld to be in `/usr/local/bin`
+   
+    $  bin/windows/kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic R4 --property print.key=true --property print.value=true --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
+
 
 
 

@@ -55,6 +55,8 @@ public class PageEventService {
     }
 
 
+    @Bean
+
 public Function<KStream<String,PageEvent>,KStream<String,Long>>  kStreamFunction(){
 
         return (input)->{
