@@ -40,7 +40,7 @@ public class PageEventService {
     public Supplier<PageEvent> pageEventSupplier(){
         return()->
             new PageEvent(
-                    Math.random()>0.5 ?"Page 1":"Page 2",
+                    Math.random()>0.5 ?"P1":"P2",
                     Math.random()>0.5 ?"U1":"U2",
                     new Date(),new Random().nextInt(9000)
             );
@@ -60,27 +60,26 @@ public class PageEventService {
 
 
     @Bean
+    public Function<KStream<String,PageEvent>,KStream<String,Long>>  kStreamFunction(){
 
-public Function<KStream<String,PageEvent>,KStream<String,Long>>  kStreamFunction(){
+        return (input) -> {
+            return input
 
-        return (input)->{
+                    .filter((k, v) -> v.getDuration() > 100)
+                    .map((k, v) -> new KeyValue<>(v.getName(), v.getDuration()))
+                    .groupByKey(Grouped.with(Serdes.String(), Serdes.Long()))
+                    .windowedBy(TimeWindows.of(Duration.ofSeconds(1)))
+                    .reduce((acc, v) -> {
 
-        return input
-                .filter((k,v)->v.getDuration()>100)
-                .map((k,v)->new KeyValue<>(v.getName(),0l))
-                .groupBy((k,v)->k,Grouped.with(Serdes.String(),Serdes.Long()))
-                .windowedBy(TimeWindows.of(Duration.ofDays(5000)))
-                .count(Materialized.as("Page_counter"))
-                .toStream()
-                .map((k,v)->new KeyValue<>("=>"+k.window().startTime()+k.window().endTime()+" "+k.key(),v));
+                                return acc+v;
+                            },
+                            Materialized.as("st-store")
+                    )
+                    .toStream()
+                    .map((k, v) -> new KeyValue<>("=>" + k.window().startTime() + k.window().endTime() + ":" + k.key(), v));
 
-
- };
-
-
-
-}
-
+        };
+    }
 
 
 
