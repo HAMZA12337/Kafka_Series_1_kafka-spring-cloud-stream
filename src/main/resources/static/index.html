@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Analytics</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/smoothie/1.34.0/smoothie.min.js"></script>
+    <style>
+        /* Centering the title text */
+        .title {
+            text-align: center;
+            font-size: 50px; /* Adjust the font size as needed */
+            margin-top: 20px;
+            padding-bottom: 50px;
+            font-family: Algerian;/* Adjust the top margin as needed */
+        }
+
+        /* Styling the canvas */
+        #chart2 {
+            width: 900px;
+            height: 600px;
+            margin: 0 auto; /* Center the canvas horizontally */
+            display: block; /* Make sure it's a block element */
+            border: 1px solid #ccc; /* Add a border for styling */
+        }
+    </style>
+</head>
+<body>
+<div class="title">Dashboard Monitoring</div>
+<canvas id="chart2" width="600" height="400"></canvas>
+<script>    var index = -1;
+randomColor = function () {
+    ++index;
+    if (index >= colors.length) index = 0;
+    return colors[index];
+}
+var pages = ["P1", "P2"];
+var colors = [
+    {sroke: 'rgba(0, 255, 0, 1)', fill: 'rgba(0, 255, 0, 0.2)'},
+    {sroke: 'rgba(255, 0, 0, 1)', fill: 'rgba(255, 0, 0, 0.2)'
+    }];
+var courbe = [];
+var smoothieChart = new SmoothieChart({tooltip: true});
+smoothieChart.streamTo(document.getElementById("chart2"), 500);
+pages.forEach(function (v) {
+    courbe[v] = new TimeSeries();
+    col = randomColor();
+    smoothieChart.addTimeSeries(courbe[v], {strokeStyle: col.sroke, fillStyle: col.fill, lineWidth: 2});
+});
+var stockEventSource = new EventSource("/analytics");
+stockEventSource.addEventListener("message", function (event) {
+    pages.forEach(function (v) {
+        val = JSON.parse(event.data)[v];
+        courbe[v].append(new Date().getTime(), val);
+    });
+});</script>
+</body>
+</html></body></html>

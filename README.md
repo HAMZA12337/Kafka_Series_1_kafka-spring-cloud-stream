@@ -218,6 +218,10 @@ run by using this command :))
     $  bin/windows/kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic R4 --property print.key=true --property print.value=true --property key.deserializer=org.apache.kafka.common.serialization.StringDeserializer --property value.deserializer=org.apache.kafka.common.serialization.LongDeserializer
 
 
+## SmoothieChart
 
+We used this library to make dashbords that we got from an event Listener 
+
+<img width="1440" alt="image" src="Dash.PNG">
 
 
